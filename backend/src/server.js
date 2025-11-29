@@ -1,21 +1,13 @@
 import express from "express";
 import "dotenv/config";
 
-const PORT = process.env.PORT;
-const app = express();
+import authRoutes from "./routes/auth.route.js";
 
-app.get("/" , (req , res) => {
-    res.send("Hello World");
-});
-app.get("/auth/login" , (req , res) => {
-    res.send("Login Success");
-});
-app.get("/auth/logout" , (req , res) => {
-    res.send("Logout Success");
-});
-app.get("/auth/sign-in" , (req , res) => {
-    res.send("Sign in Success");
-});
+const app = express();
+const PORT = process.env.PORT;
+
+
+app.use("/auth" , authRoutes);
 
 app.listen(PORT , () => {
     console.log(`Server is running on ${PORT}`);
