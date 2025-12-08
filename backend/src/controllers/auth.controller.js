@@ -124,3 +124,5 @@ export function logout(req, res) {
   res.clearCookie("jwt"); //This must be same as sent keyword in cookie.
   return res.status(200).json({success : true , message : "Logout Successful"});
 }
+
+export function onboard(req,res){}
