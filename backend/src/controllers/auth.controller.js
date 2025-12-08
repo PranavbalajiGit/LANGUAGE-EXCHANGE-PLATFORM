@@ -156,7 +156,21 @@ export async function onboard(req,res){
     );
 
     if(!updatedUser)
+    {
       res.status(404).json({message : "User Not Found"});
+    }
+
+    try {
+      await upsertStreamUser({
+      id : updatedUser._id.toString(),
+      name : updatedUser.fullName,
+      image : updatedUser.profilePic || "" , 
+    })
+      console.log(`Stream User Updated after Onboarding : ${updatedUser.fullName}`);
+
+    } catch (streamError) {
+      console.log(`Error Updating Stream User while Onboarding : `, streamError.message);
+    }
 
     res.status(200).json({success : true , user : updatedUser})
 
@@ -165,3 +179,4 @@ export async function onboard(req,res){
     res.status(500).json({message : "Internal Server Error"});
   }
 }
+
