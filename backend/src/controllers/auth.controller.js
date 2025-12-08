@@ -125,4 +125,43 @@ export function logout(req, res) {
   return res.status(200).json({success : true , message : "Logout Successful"});
 }
 
-export function onboard(req,res){}
+export async function onboard(req,res){
+  try {
+    const userId = req.user._id
+
+    const {fullName , bio , nativeLanguage , learningLanguage , location} = req.body;
+    
+    if(!fullName || !bio || !nativeLanguage || !learningLanguage || !location)
+    {
+      res.status(400).json(
+        {
+          message : "All Fields are required",
+          missingFields : [
+            !fullName && "fullName",
+            !bio && "bio",
+            !nativeLanguage && "nativeLanguage",
+            !learningLanguage && "learningLanguage",
+            !location && "location"
+          ],
+        });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(userId, {
+        ...req.body , 
+        isOnboarded : true
+      } , 
+      //This new  : true makes the function to return the modified User data else it returns the
+      // data before updation. 
+      {new : true}
+    );
+
+    if(!updatedUser)
+      res.status(404).json({message : "User Not Found"});
+
+    res.status(200).json({success : true , user : updatedUser})
+
+  } catch (error) {
+    console.error("Onboarding error : ", error);
+    res.status(500).json({message : "Internal Server Error"});
+  }
+}
