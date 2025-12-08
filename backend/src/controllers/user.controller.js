@@ -41,6 +41,7 @@ export async function getMyFriends(req , res) {
 export async function sendFriendRequest(req , res) {
     try {
         const myId = req.user.id;
+        // This below variable name id must be same as the dynamic route in user.route.js file. 
         const {id : recipientId} = req.params;
 
         if(myId === recipientId)
@@ -82,6 +83,40 @@ export async function sendFriendRequest(req , res) {
 
     } catch (error) {
         console.log("Error in Send FriendRequest Controller : ", error.message);
+        res.status(500).json({message : "Internal Server Error"});
+    }
+}
+
+export async function acceptFriendRequest(req , res) {
+    try {
+        const {id : requestId} = req.params;
+        const friendRequest = await FriendRequest.findById(requestId);
+
+        if(!friendRequest)
+        {
+            res.status(404).json({message : "Friend Request Not found"});
+        }
+
+        //Verify the current user is the recipient
+        if(friendRequest.recipient.toString() !== req.user.id)
+        {
+            res.status(403).json({message : "Not Authorized to accept this request"});
+        }
+
+        friendRequest.status = "accepted";
+        await friendRequest.save();
+
+        await User.findByIdAndUpdate(friendRequest.sender , {
+            $addToSet : {friends : friendRequest.recipient},
+        });
+
+        await User.findByIdAndUpdate(friendRequest.recipient , {
+            $addToSet : {friends : friendRequest.sender},
+        })
+
+        res.status(200).json({message : "Friend Request Accepted"});
+    } catch (error) {
+        console.log("Error in acceptFriendRequest Controller:",error.message);
         res.status(500).json({message : "Internal Server Error"});
     }
 }
