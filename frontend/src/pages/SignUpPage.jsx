@@ -1,6 +1,9 @@
 import { useState } from "react";
 import {ShipWheelIcon} from "lucide-react"
 import { Link } from "react-router";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { axiosInstance } from "../lib/axios.js";
+import { signup } from "../lib/api.js";
 
 const SignUpPage = () => {
   const [signupData, setSignupData] = useState({
@@ -9,10 +12,16 @@ const SignUpPage = () => {
     password: "",
   });
 
-  
+  const queryClient = useQueryClient() 
+
+  const {mutate : signupMutation , isPending , error} = useMutation({
+    mutationFn : signup,
+    onSuccess : () => queryClient.invalidateQueries({queryKey : ["authUser"]}),
+  })
 
   const handleSignUp = (e) => {
     e.preventDefault();
+    signupMutation(signupData);
   };
 
   return (
@@ -53,7 +62,7 @@ const SignUpPage = () => {
                                 placeholder="PRANAV BALAJI P MA"
                                 className="input input-bordered w-full"
                                 value={signupData.fullName}
-                                onChange={(e) => setSignupData({...signupData , fullName : e.target.value})}
+                                onChange={(e) => setSignupData({ ...signupData , fullName : e.target.value})}
                                 required
                               />
                         </div>
@@ -67,7 +76,7 @@ const SignUpPage = () => {
                                 placeholder="pranav@gmail.com"
                                 className="input input-bordered w-full"
                                 value={signupData.email}
-                                onChange={(e) => setSignupData({...signupData , email : e.target.value})}
+                                onChange={(e) => setSignupData({ ...signupData , email : e.target.value})}
                                 required
                               />
                         </div>
@@ -102,7 +111,7 @@ const SignUpPage = () => {
 
                     </div>
                     <button className="btn btn-primary w-full" type = "submit">
-                          Create Account
+                          {isPending ? "Signing Up ..." : "Create Account"}
                     </button>
 
                     <div className="text-center mt-4">
