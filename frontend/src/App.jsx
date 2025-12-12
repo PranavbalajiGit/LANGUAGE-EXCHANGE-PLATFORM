@@ -9,25 +9,14 @@ import ChatPage from "./pages/ChatPage.jsx";
 import OnboardingPage from "./pages/OnboardingPage.jsx";
 
 import { Toaster } from "react-hot-toast";
-import { useQuery } from "@tanstack/react-query";
-import { axiosInstance } from "./lib/axios.js";
+import PageLoader from "./components/PageLoader.jsx";
+import useAuthUser from "./hooks/useAuthUser.js";
 
 const App = () => {
-  const {
-    data: authData,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["authUser"],
-    queryFn: async () => {
-      const res = await axiosInstance.get("/auth/me");
-      return res.data;
-    },
-    retry: false, // This actually stops tanstack to retry the failed request again and again
-  });
+  
+  const {isLoading, authUser} = useAuthUser()
 
-  const authUser = authData?.user; // THe reason for .user is '/auth/me' endpoint in auth.route.js has given
-  // response as user only. The variable name must be same as what it is sent.
+  if(isLoading) return <PageLoader />;
 
   return (
     <div className="h-screen">
