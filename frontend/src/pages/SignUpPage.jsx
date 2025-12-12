@@ -2,7 +2,6 @@ import { useState } from "react";
 import {ShipWheelIcon} from "lucide-react"
 import { Link } from "react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { axiosInstance } from "../lib/axios.js";
 import { signup } from "../lib/api.js";
 
 const SignUpPage = () => {
@@ -40,6 +39,13 @@ const SignUpPage = () => {
                 Streamify
               </span>
           </div>
+
+          {/* ERROR MESSAGE IF ANY EXIST */}
+          {error && (
+            <div className="alert alert-error mb-4">
+                <span>{error.response.data.message}</span>
+            </div>
+          )}
 
           <div className="w-full">
               <form onSubmit={handleSignUp}>
@@ -111,7 +117,14 @@ const SignUpPage = () => {
 
                     </div>
                     <button className="btn btn-primary w-full" type = "submit">
-                          {isPending ? "Signing Up ..." : "Create Account"}
+                          {isPending ? (
+                            <>
+                            <span className="loading loading-spinner loading-xs"> </span>
+                            Loading... 
+                            </>
+                          ) : (
+                            "Create Account"
+                          )}
                     </button>
 
                     <div className="text-center mt-4">
