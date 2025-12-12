@@ -8,7 +8,7 @@ const useAuthUser = () => {
     retry: false, // This actually stops tanstack to retry the failed request again and again
   });
 
-  return {isLoading : authUser.isLoading , authUser : authUser.data.user}
+  return {isLoading : authUser.isLoading , authUser : authUser.data?.user}
 }
 
 export default useAuthUser

@@ -14,40 +14,50 @@ import useAuthUser from "./hooks/useAuthUser.js";
 
 const App = () => {
   
-  const {isLoading, authUser} = useAuthUser()
+  const {isLoading, authUser} = useAuthUser();
+
+  const isAuthenticated = Boolean(authUser)
+  const isOnboarded = authUser?.isOnboarded
 
   if(isLoading) return <PageLoader />;
 
   return (
     <div className="h-screen">
       <Routes>
+        {/* The first Route tells a user must be both Authenticated and Onboarded. If so go to Homepage 
+        Else there is another check i.e if user is not even Authenticated then go to login or else user authenticated 
+        but not Onboarded then go to Onboarding page. */}
         <Route
           path="/"
-          element={authUser ? <HomePage /> : <Navigate to="/login" />}
+          element={isAuthenticated && isOnboarded ? (
+            <HomePage/>
+          ) : (
+            <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
+          )}
         />
         <Route
           path="/signup"
-          element={!authUser ? <SignUpPage /> : <Navigate to="/" />}
+          element={!isAuthenticated ? <SignUpPage /> : <Navigate to="/" />}
         />
         <Route
           path="/login"
-          element={!authUser ? <LoginPage /> : <Navigate to="/" />}
+          element={!isAuthenticated ? <LoginPage /> : <Navigate to="/" />}
         />
         <Route
           path="/notifications"
-          element={authUser ? <NotificationsPage /> : <Navigate to="/login" />}
+          element={isAuthenticated ? <NotificationsPage /> : <Navigate to="/login" />}
         />
         <Route
           path="/call"
-          element={authUser ? <CallPage /> : <Navigate to="/login" />}
+          element={isAuthenticated ? <CallPage /> : <Navigate to="/login" />}
         />
         <Route
           path="/chat"
-          element={authUser ? <ChatPage /> : <Navigate to="/login" />}
+          element={isAuthenticated ? <ChatPage /> : <Navigate to="/login" />}
         />
         <Route
           path="/onboarding"
-          element={authUser ? <OnboardingPage /> : <Navigate to="/login" />}
+          element={isAuthenticated ? <OnboardingPage /> : <Navigate to="/login" />}
         />
       </Routes>
 
