@@ -3,7 +3,7 @@ import useAuthUser from "../hooks/useAuthUser.js"
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { completeOnboarding } from "../lib/api.js";
-import { CameraIcon, LoaderCircle, LoaderIcon, MapPinIcon, ShipWheelIcon, ShuffleIcon } from "lucide-react";
+import { CameraIcon, LoaderIcon, MapPinIcon, ShipWheelIcon, ShuffleIcon } from "lucide-react";
 import { LANGUAGES } from "../constants/index.js";
 
 const OnboardingPage = () => {
