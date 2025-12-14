@@ -22,7 +22,7 @@ const App = () => {
   if (isLoading) return <PageLoader />;
 
   return (
-    <div className="h-screen">
+    <div className="h-screen" data-theme = "forest">
       <Routes>
         {/* The first Route tells a user must be both Authenticated and Onboarded. If so go to Homepage 
         Else there is another check i.e if user is not even Authenticated then go to login or else user authenticated 
