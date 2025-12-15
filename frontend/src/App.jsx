@@ -12,9 +12,11 @@ import { Toaster } from "react-hot-toast";
 import PageLoader from "./components/PageLoader.jsx";
 import useAuthUser from "./hooks/useAuthUser.js";
 import Layout from "./components/Layout.jsx";
+import { useThemeStore } from "./store/useThemeStore.js";
 
 const App = () => {
   const { isLoading, authUser } = useAuthUser();
+  const {theme} = useThemeStore();
 
   const isAuthenticated = Boolean(authUser);
   const isOnboarded = authUser?.isOnboarded;
@@ -22,7 +24,7 @@ const App = () => {
   if (isLoading) return <PageLoader />;
 
   return (
-    <div className="h-screen" data-theme = "forest">
+    <div className="h-screen" data-theme = {theme}>
       <Routes>
         {/* The first Route tells a user must be both Authenticated and Onboarded. If so go to Homepage 
         Else there is another check i.e if user is not even Authenticated then go to login or else user authenticated 
