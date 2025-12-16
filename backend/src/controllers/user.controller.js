@@ -12,7 +12,7 @@ export async function getRecommendedUsers(req , res) {
         const recommendedUser = await User.find({
             $and : [
                 {_id : {$ne : currentUserId}}, // Exclude the Current User
-                {$id : {$nin : currentUser.friends}}, // Exclude the friends in recommendation
+                {_id : {$nin : currentUser.friends}}, // Exclude the friends in recommendation
                 {isOnboarded : true}
             ]
         })
@@ -46,19 +46,19 @@ export async function sendFriendRequest(req , res) {
 
         if(myId === recipientId)
         {
-            res.status(400).json({message : "You can't send friend request to yourself"});
+            return res.status(400).json({message : "You can't send friend request to yourself"});
         }
 
         const recipient = await User.findById(recipientId);
         if(!recipient)
         {
-            res.status(404).json({message : "Recipient Not found"});
+            return res.status(404).json({message : "Recipient Not found"});
         }
 
         //check if user already a friend
         if(recipient.friends.includes(myId))
         {
-            res.status(400).json({message : "You are already friends with this user"});
+            return res.status(400).json({message : "You are already friends with this user"});
         }
 
         //check if request alredy exists
@@ -71,7 +71,7 @@ export async function sendFriendRequest(req , res) {
 
         if(existingRequest)
         {
-            res.status(400).json({message:"A friend request already exists between you and this user"});
+            return res.status(400).json({message:"A friend request already exists between you and this user"});
         }
 
         const friendRequest = await FriendRequest.create({
