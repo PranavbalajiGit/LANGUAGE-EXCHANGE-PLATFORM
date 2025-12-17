@@ -39,7 +39,7 @@ const HomePage = () => {
       });
       setOutgoingRequestsIds(outgoingIds);
     }
-  } , [outgoingRequestsIds]);
+  } , [outgoingFriendReqs]);
 
   
   return (
@@ -94,7 +94,6 @@ const HomePage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {recommendedUsers.map((user) => {
                   const hasRequestBeenSent = outgoingRequestsIds.has(user._id);
-                  console.log(hasRequestBeenSent);
                   return (
                     <div
                       key={user._id}
