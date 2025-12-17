@@ -6,6 +6,7 @@ import { CheckCircleIcon, MapPinIcon, UserPlusIcon, UsersIcon } from "lucide-rea
 
 import NoFriendsFound from "../components/NoFriendsFound.jsx";
 import FriendCard, { getLanguageFlag } from "../components/FriendCard.jsx";
+import { capitialize } from "../lib/util.js";
 
 const HomePage = () => {
   const queryClient =  useQueryClient();
@@ -167,4 +168,3 @@ const HomePage = () => {
 export default HomePage
 
 
-const capitialize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
