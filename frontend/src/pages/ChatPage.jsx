@@ -17,6 +17,8 @@ import { StreamChat } from 'stream-chat';
 
 import toast from 'react-hot-toast'
 import ChatLoader from '../components/ChatLoader.jsx';
+import CallButton from '../components/CallButton.jsx';
+
 
 const STREAM_API_KEY = import.meta.env.VITE_STREAM_API_KEY
 
@@ -37,7 +39,7 @@ const ChatPage = () => {
   });
 
   useEffect(() => {
-    const initChat = async() => {
+    const initChat = async () => {
       if(!tokenData?.token || !authUser) return;
 
       try {
@@ -49,13 +51,13 @@ const ChatPage = () => {
           id : authUser._id,
           name : authUser.fullName,
           image : authUser.profilePic,
-        }, tokenData.token)
+        }, tokenData.token);
 
         const channelId = [authUser._id , targetUserId].sort().join("-");
 
         const currChannel = client.channel("messaging" , channelId , {
           members: [authUser._id , targetUserId],
-        })
+        });
 
         await currChannel.watch();
 
@@ -64,19 +66,54 @@ const ChatPage = () => {
 
       } catch (error) {
         console.error("Error initializing chat : " , error);
-        toast.error("Could not connect to the chat.Please try again");
+        toast.error("Could not connect to the chat. Please try again");
         
       } finally {
         setLoading(false);
       }
+    };
+
+    initChat();
+
+  } , [tokenData , authUser , targetUserId]);
+
+  const handleVideoCall = () => {
+    if(channel)
+    {
+      const callUrl = `${window.location.origin}/call/${channel.id}`;
+
+      channel.sendMessage({
+        text : `I have started a Video Call. Join me here : ${callUrl}`,
+      })
+
+      toast.success("Video Call link sent Successfully");
     }
-  } , [])
+  }
 
-  if(loading || !chatClient || !channel) return <ChatLoader />
-  
+  if(loading || !chatClient || !channel) return <ChatLoader />;
+
   return (
-    <div>ChatPage</div>
-  )
-}
+    <div className='h-[93vh]'>
 
-export default ChatPage
+      <Chat client={chatClient}>
+        <Channel channel={channel}>
+          <div className='w-full relative'>
+
+            <CallButton handleVideoCall = {handleVideoCall}/>
+            <Window>
+              <ChannelHeader />
+              <MessageList />
+              <MessageInput focus/>
+            </Window>
+
+          </div>
+
+          <Thread />
+        </Channel>
+      </Chat>
+
+    </div>
+  );
+};
+
+export default ChatPage;
